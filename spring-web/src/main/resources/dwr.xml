@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dwr="http://www.directwebremoting.org/schema/spring-dwr"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.directwebremoting.org/schema/spring-dwr
+       http://www.directwebremoting.org/schema/spring-dwr-3.0.xsd">
+
+        <dwr:annotation-config/>
+        <dwr:annotation-scan base-package="ecp.spring" scanDataTransferObject="true" scanRemoteProxy="true" />
+        <dwr:url-mapping />
+        <dwr:controller id="dwrController" debug="true"/>
+        <dwr:configuration>
+          <dwr:convert type="bean" class="ecp.spring.model.Person"/>
+          <dwr:convert type="bean" class="ecp.spring.model.ContactInfo"/>
+          <dwr:convert type="bean" class="ecp.spring.model.Address"/>
+          <dwr:convert type="bean" class="ecp.spring.model.Name"/>
+          <dwr:convert type="bean" class="ecp.spring.model.Tickets"/>
+          <dwr:convert type="bean" class="ecp.spring.model.Role"/>
+          <dwr:convert type="bean" class="ecp.spring.model.PersonModel"/>
+        </dwr:configuration>
+</beans>
