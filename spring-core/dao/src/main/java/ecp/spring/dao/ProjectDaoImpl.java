@@ -2,6 +2,7 @@ package ecp.spring.dao;
 
 import java.util.List;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.SessionFactory;
 import ecp.spring.model.Project;
 
@@ -18,6 +19,17 @@ public class ProjectDaoImpl implements ProjectDao {
 		List list = sessionFactory.getCurrentSession().createCriteria(Project.class)
 					.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
 		return list;
+	}
+
+	public List listProjects(int order, String column){
+		Criteria crit = sessionFactory.getCurrentSession().createCriteria(Project.class);
+		if(order == 1){
+			crit.addOrder(Order.asc(column));
+		} else {
+			crit.addOrder(Order.desc(column));
+		}
+
+		return crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
 	}
 
 	public Project getProject(int id) {

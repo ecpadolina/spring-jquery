@@ -27,7 +27,7 @@ public class UserController {
 		List userList = userManagerImpl.listUser();
 		model.addAttribute("userList", userList);
 		
-		return "users";
+		return "user/users";
 	}
 
 	@RequestMapping(value="/users/add", method=RequestMethod.GET)
@@ -35,7 +35,7 @@ public class UserController {
 		Users user = new Users();
 		model.addAttribute("user",user);
 		
-		return "userForm";
+		return "user/userForm";
 	} 
 
 	@RequestMapping(value="/users/add", method=RequestMethod.POST)
@@ -52,7 +52,7 @@ public class UserController {
 		Users user = userManagerImpl.getUser(id);
 		model.addAttribute("user",user);
 		
-		return "userForm";
+		return "user/userForm";
 	}
 
 	@RequestMapping(value ="/users/edit/{id}", method = RequestMethod.POST)

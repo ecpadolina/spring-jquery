@@ -1,7 +1,10 @@
 package ecp.spring.service;
 
 import java.util.List;
+import java.util.Set;
+
 import ecp.spring.model.Project;
+import ecp.spring.model.Tickets;
 import ecp.spring.model.ProjectDTO;
 import ecp.spring.dao.ProjectDaoImpl;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,11 @@ public class ProjectManagerImpl implements ProjectManager{
   	}
 
     @Transactional(readOnly=true)
+    public List listProjects(int order, String column){
+      return projectDao.listProjects(order,column);
+    }
+
+    @Transactional(readOnly=true)
   	public Project getProject(int id){
   		return (projectDao.getProject(id));
   	}
@@ -39,4 +47,18 @@ public class ProjectManagerImpl implements ProjectManager{
   	public void updateProject(Project project){
   		projectDao.updateProject(project);
   	}
+
+    public void deleteTicket(int projectId, int ticketId){
+      Project project = projectDao.getProject(projectId);
+      Set<Tickets> tickets = project.getTickets();
+      for(Tickets ticket : tickets){
+        if(ticketId == ticket.getId()){
+            tickets.remove(ticket);
+            project.setTickets(tickets);
+            projectDao.updateProject(project);
+            return;
+          }
+
+    }
+  }
 }

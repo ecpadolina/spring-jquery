@@ -9,12 +9,13 @@
 	<title>Spring Activity - Ticket Management</title>
 </head>
 <body>
-	<jsp:include page="headers.jsp"/>
+	<jsp:include page="../headers.jsp"/>
 	<h1> Ticket Form </h1>
+	<input type="hidden" id="projectId" value="${projectId}"/>
 	<form:form method="POST" modelAttribute="ticket">
 	<form:input type="hidden" path="id"/>
-	Ticket Details: <form:input path="ticketDetails"/><br>
-	Ticket Status: <form:input path="ticketStatus"/><br>
+	Ticket Details: <form:input id="ticketDetails" path="ticketDetails"/><br>
+	Ticket Status: <form:input id="ticketStatus" path="ticketStatus"/><br>
 	Assign to: 
 	<select name="persons">
 	<c:forEach items="${persons}" var="p">
@@ -29,8 +30,10 @@
 	</select>
 	<br>
 	<br>
-	<input type="submit" value="Submit"/>
+	<input type="submit" id="create" value="Submit"/>
 	<input type="reset"/>
 </form:form>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="/resources/tickets/ticketForm.js"></script>
 </body>
 </html>

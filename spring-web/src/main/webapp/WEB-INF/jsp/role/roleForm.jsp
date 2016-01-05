@@ -9,7 +9,7 @@
 	<title>Spring Activity - Role Management</title>
 </head>
 <body>
-	<jsp:include page="headers.jsp"/>
+	<jsp:include page="../headers.jsp"/>
 	<h1>Role Form</h1>
 	<form:form metohd="POST" accept-charset="UTF-8" modelAttribute="role">
 		<form:input path="roleId" name="roleId" type="hidden"/>

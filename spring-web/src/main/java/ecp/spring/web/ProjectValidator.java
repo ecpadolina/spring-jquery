@@ -17,11 +17,11 @@ import org.springframework.stereotype.Component;
 public class ProjectValidator implements Validator {
 
     public boolean supports(Class clazz){
-        return Project.class.equals(clazz);
+        return ProjectDTO.class.equals(clazz);
     }
 
     public void validate(Object target, Errors errors){
-        Project project = (Project)target;
+        ProjectDTO project = (ProjectDTO)target;
         Set<Tickets> tickets = project.getTickets();
         boolean personFound = false;
 

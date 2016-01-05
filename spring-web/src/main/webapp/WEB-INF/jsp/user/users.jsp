@@ -8,7 +8,7 @@
 	    <title>Spring Activity - Person Management</title>
 </head>
 <body>
-	<jsp:include page="headers.jsp"/>
+	<jsp:include page="../headers.jsp"/>
 	<h1>User Management</h1>
 	<table>
 		<thead>

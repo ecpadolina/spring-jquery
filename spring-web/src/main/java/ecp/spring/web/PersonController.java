@@ -66,7 +66,7 @@ public class PersonController{
 
 		List roleList = roleManagerImpl.listRolesWithPerson();
 		model.addAttribute("roleList", roleList);
-		return "index";
+		return "person/index";
 	}
 
 	@RequestMapping(value="/", headers="Accept=application/json")
@@ -86,8 +86,10 @@ public class PersonController{
 	public String addPersonGet(ModelMap model){
 		Person person = new Person();
 		model.addAttribute("person", person);
+		model.addAttribute("action", "add");
+		model.addAttribute("method", "PUT");
 		addRolesToModel(model);
-		return "personForm";
+		return "person/personForm";
 	}
 
 	@RequestMapping(value="/person/add", method=RequestMethod.POST)
@@ -115,7 +117,7 @@ public class PersonController{
 		if(result.hasErrors()){
 			model.addAttribute("contacts", contacts);
 			addRolesToModel(model);
-			return "personForm";
+			return "person/personForm";
 		}
 
 		personManagerImpl.addPerson(person);
@@ -128,7 +130,7 @@ public class PersonController{
                     produces=MediaType.APPLICATION_JSON_VALUE,
                     consumes=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public boolean addEmployeeJSON(@RequestBody Person person,
+    public boolean addPersonJSON(@RequestBody Person person,
                                     ModelMap model) {
     	try{
     		Set<Role> tempRoles = person.getRoles();
@@ -150,8 +152,10 @@ public class PersonController{
 		PersonDTO person = personTransformer.toDTO(personManagerImpl.getPerson(id));
 		model.addAttribute("person", person);
 		model.addAttribute("contacts", person.getContacts());
+		model.addAttribute("action", "edit");
+		model.addAttribute("method", "PUT");
 		addRolesToModel(model);
-		return "personForm";
+		return "person/personForm";
 	}
 
 	@RequestMapping(value="/person/edit/{id}", method=RequestMethod.POST)
@@ -178,11 +182,34 @@ public class PersonController{
 		if(result.hasErrors()){
 			model.addAttribute("contacts", contacts);
 			addRolesToModel(model);
-			return "personForm";
+			return "person/personForm";
 		}
 		personManagerImpl.updatePerson(person);
 		return "redirect:/";
 	}
+
+	@RequestMapping(value="/person/edit",
+                    method=RequestMethod.PUT,
+                    produces=MediaType.APPLICATION_JSON_VALUE,
+                    consumes=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public boolean editPersonJSON(@RequestBody Person person,
+                                    ModelMap model) {
+    	try{
+    		Set<Role> tempRoles = person.getRoles();
+    		Set<Role> roles = new HashSet<Role>();
+    		for(Role tempRole : tempRoles){
+    			Role role = roleManagerImpl.getRole(tempRole.getRoleId());
+    			roles.add(role);
+    		}
+    		person.setRoles(roles);
+        	personManagerImpl.updatePerson(person);
+        	return true;
+        } catch (Exception e){
+        	e.printStackTrace();
+        	return false;
+        }
+    }
 
 	@RequestMapping(value="/", method=RequestMethod.POST)
 	public String deletePerson(@RequestParam(value="id") int id){
@@ -212,10 +239,6 @@ public class PersonController{
 		PersonDTO person = new PersonDTO();
 		if(file != null){
 			person = personFileParser.extractPersonFromFile(file);
-			/*model.addAttribute("person", person);
-			model.addAttribute("contacts", person.getContacts());
-			addRolesToModel(model);
-			return "personForm";*/
 		}
 		personManagerImpl.addPerson(personTransformer.toPerson(person));
 		return "redirect:/";

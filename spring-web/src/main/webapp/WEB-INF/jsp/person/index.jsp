@@ -9,7 +9,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 </head>
 <body>
-	<jsp:include page="headers.jsp"/>
+	<jsp:include page="../headers.jsp"/>
 	<h1>Person Management</h1>
 	<input type="hidden" id="userRole" value="${userRole}"/>
 	<form>
@@ -44,6 +44,6 @@
 		</tbody>
 	</table>
 	<script type="text/javascript">var userRole = $("#userRole").val();</script>
-	<script src="resources/personIndex.js"></script>
+	<script src="resources/person/personIndex.js"></script>
 </body>
 </html>

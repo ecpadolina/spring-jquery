@@ -1,5 +1,5 @@
 $(document).ready(function() {
-
+    
     $("#search").click(function(event){
       event.preventDefault();	
       var role = $("#role").val();
@@ -27,7 +27,6 @@ $(document).ready(function() {
 
         $(".delete").click(function(e){
         	var id = $(this).val();
-        	console.log(id);
 			if(confirm("Delete person?")){
 				var ajaxCall = $.ajax({
 					url: "person/delete/" + id,

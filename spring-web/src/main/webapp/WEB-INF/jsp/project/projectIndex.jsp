@@ -7,8 +7,18 @@
 	<title>Spring Activity - Project Management</title>
 </head>
 <body>
-	<jsp:include page="headers.jsp"/>
+	<jsp:include page="../headers.jsp"/>
 	<h1>Project Management</h1>
+	Sort By: <select id="column" name="column">
+		<option value="id">Id</option>
+		<option value="name.lastName">Last Name</option>
+		<option value="gwa">Gwa</option>
+	</select>
+	<select id="order" name="order">
+		<option value="1">Ascending</option>
+		<option value="2">Descending</option>
+	</select>
+	<button id="search">Search</button>
 	<br>
 	<table>
 		<thead>
@@ -20,17 +30,10 @@
 	            <th>Actions</th>
 			</tr>
 		</thead>
-		<tbody>
-	         <c:forEach var="p" items="${projectList}">
-				<tr>
-					<td>${p.id}</td>
-					<td>${p.name}</td>
-					<td>${p.startDate}</td>
-					<td>${p.endDate}</td>
-					<td><form method="POST"><input type="hidden" name="projectId" value="${p.id}"><button type="submit">Delete</button></form><button onclick="location.href='/project/edit/${p.id}'">Edit</button></td>
-				</tr>
-			</c:forEach>     
+		<tbody id="projects">
 		</tbody>
 	</table>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="/resources/project/projectIndex.js"></script>
 </body>
 </html>

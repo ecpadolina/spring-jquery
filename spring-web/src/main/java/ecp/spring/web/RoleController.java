@@ -20,7 +20,7 @@ public class RoleController{
 	@RequestMapping("/role")
 	public String roleIndex(Model model){
 		model.addAttribute("roleList",roleManagerImpl.getRoles(1,"roleId"));
-		return "roleIndex";
+		return "role/roleIndex";
 	}
 
 	@RequestMapping(value="/role", headers="Accept=application/json")
@@ -34,7 +34,7 @@ public class RoleController{
 	public String addRoleGet(ModelMap model){
 		Role role = new Role();
 		model.addAttribute("role", role);
-		return "roleForm";
+		return "role/roleForm";
 	}
 
 	@RequestMapping(value="role/add", method=RequestMethod.POST)
@@ -52,7 +52,7 @@ public class RoleController{
 	@RequestMapping(value="/role/edit/{id}", method=RequestMethod.GET)
 	public String editRoleGet(Model model, @PathVariable int id){
 		model.addAttribute("role", roleManagerImpl.getRole(id));
-		return "roleForm";
+		return "role/roleForm";
 	}
 
 	@RequestMapping(value="/role/edit/{id}", method=RequestMethod.POST)

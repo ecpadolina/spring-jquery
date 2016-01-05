@@ -12,7 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -48,14 +50,23 @@ public class ProjectController {
     @RequestMapping("/project")
     public String projectIndex(Model model) {
         model.addAttribute("projectList", projectManagerImpl.listProjects());
-        return "projectIndex";
+        return "project/projectIndex";
+    }
+
+    @RequestMapping(value="/project", headers="Accept=application/json")
+    @ResponseBody
+    public List listProject(@RequestParam("order") int order,
+                            @RequestParam("column") String column){
+        return projectManagerImpl.listProjects(order, column);
     }
 
     @RequestMapping(value = "/project/add", method = RequestMethod.GET)
     public String addProjectGet(ModelMap model) {
         model.addAttribute("project", new ProjectDTO());
         model.addAttribute("persons", personManagerImpl.listPerson(0, 1, "id"));
-        return "projectForm";
+        model.addAttribute("method", "PUT");
+        model.addAttribute("action", "add");
+        return "project/projectForm";
     }
 
     @RequestMapping(value = "/project/add", method = RequestMethod.POST)
@@ -64,7 +75,7 @@ public class ProjectController {
         projectValidator.validate(project, result);
         if (result.hasErrors()) {
             model.addAttribute("persons", personManagerImpl.listPerson(0, 1, "id"));
-            return "projectForm";
+            return "project/projectForm";
         }
 
         Set<Person> members = new HashSet<Person>();
@@ -79,10 +90,43 @@ public class ProjectController {
         return "redirect:/project";
     }
 
+    @RequestMapping(value = "/project/add",
+                    method=RequestMethod.PUT,
+                    produces=MediaType.APPLICATION_JSON_VALUE,
+                    consumes=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public boolean addProjectJSON(@RequestBody ProjectDTO project, ModelMap model){
+        try {
+            Set<Person> tempPersons = project.getPersons();
+            Set<Person> persons = new HashSet<Person>();
+            for(Person person : tempPersons){
+                persons.add(personManagerImpl.getPerson(person.getId()));
+            }
+            project.setPersons(persons);
+            projectManagerImpl.addProject(project);
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     @RequestMapping(value = "/project", method = RequestMethod.POST)
     public String deleteProject(@RequestParam(value = "projectId") int id) {
         projectManagerImpl.deleteProject(id);
         return "redirect:/project";
+    }
+
+    @RequestMapping(value = "/project/delete/{id}", headers="Accept=application/json")
+    @ResponseBody
+    public boolean deleteProjectJSON(@PathVariable int id){
+        try {
+            projectManagerImpl.deleteProject(id);
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @RequestMapping(value = "/project/edit/{id}", method = RequestMethod.GET)
@@ -91,7 +135,9 @@ public class ProjectController {
         model.addAttribute("persons", personManagerImpl.listPerson(0, 1, "id"));
         model.addAttribute("id", id);
         model.addAttribute("project", project);
-        return "projectForm";
+        model.addAttribute("method", "PUT");
+        model.addAttribute("action", "edit");
+        return "project/projectForm";
     }
 
     @RequestMapping(value = "/project/edit/{id}", method = RequestMethod.POST)
@@ -109,10 +155,51 @@ public class ProjectController {
         projectValidator.validate(project, result);
         if (result.hasErrors()) {
             model.addAttribute("persons", personManagerImpl.listPerson(0, 1, "id"));
-            return "projectForm";
+            return "project/projectForm";
         }
         projectManagerImpl.updateProject(project);
         return "redirect:/project";
+    }
+
+    @RequestMapping(value = "/project/edit",
+                    method=RequestMethod.PUT,
+                    produces=MediaType.APPLICATION_JSON_VALUE,
+                    consumes=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public boolean editProjectJSON(@RequestBody Project project, ModelMap model){
+        try {
+            Set<Person> tempPersons = project.getPersons();
+            Set<Person> persons = new HashSet<Person>();
+            for(Person person : tempPersons){
+                persons.add(personManagerImpl.getPerson(person.getId()));
+            }
+            project.setPersons(persons);
+            project.setTickets(getProjectTickets(project.getId()));
+            projectManagerImpl.updateProject(project);
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @RequestMapping(value = "/project/edit/{id}/tickets", headers="Accept=application/json")
+    @ResponseBody
+    public Set<Tickets> listTicketsJSON(@PathVariable int id){
+        return projectManagerImpl.getProject(id).getTickets();
+    }
+
+    @RequestMapping(value = "project/edit/{id}/deleteTicket", headers="Accept=application/json")
+    @ResponseBody
+    public boolean deleteTicketJSON(@PathVariable int id, @RequestParam("ticketId") Integer ticketId){
+        try {
+            projectManagerImpl.deleteTicket(id, ticketId);
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
     @RequestMapping(value = "/project/edit/{id}/addTicket", method = RequestMethod.GET)
@@ -121,7 +208,30 @@ public class ProjectController {
         Project project = projectManagerImpl.getProject(id);
         model.addAttribute("ticket", ticket);
         model.addAttribute("persons", project.getPersons());
-        return "ticketForm";
+        model.addAttribute("projectId", project.getId());
+        return "ticket/ticketForm";
+    }
+
+    @RequestMapping(value = "/project/{id}/ticket/add",
+                    method=RequestMethod.PUT,
+                    produces=MediaType.APPLICATION_JSON_VALUE,
+                    consumes=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public boolean addTicketJSON(@RequestBody Tickets ticket, ModelMap model, @PathVariable int id){
+        try {
+            Project project = projectManagerImpl.getProject(id);
+            Set<Tickets> tickets = project.getTickets();
+            Person person = personManagerImpl.getPerson(ticket.getPerson().getId());
+            ticket.setPerson(person);
+            tickets.add(ticket);
+            project.setTickets(tickets);
+            projectManagerImpl.updateProject(project);
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
     @RequestMapping(value = "/project/edit/{id}/addTicket", method = RequestMethod.POST)
@@ -152,7 +262,7 @@ public class ProjectController {
         }
         model.addAttribute("ticket", ticketToEdit);
         model.addAttribute("persons", project.getPersons());
-        return "ticketForm";
+        return "ticket/ticketForm";
     }
 
     @RequestMapping(value ="/project/edit/{id}/editTicket/{tId}", method = RequestMethod.POST)

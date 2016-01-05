@@ -8,14 +8,14 @@
 
 <head>
 <title>Person Management - Person Form</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="/resources/scripts.js"></script>
-	<script src="/resources/personForm.js"></script></head>
+</head>
 <body>
-	<jsp:include page="headers.jsp"/>
+	<jsp:include page="../headers.jsp"/>
 	<h1>Person Form</h1>
+		<input type="hidden" id="action" value="${action}"/>
+		<input type="hidden" id="method" value="${method}"/>
 	<form:form method="POST" accept-charset="UTF-8" modelAttribute="person">
-		<form:input type="hidden" path="id"/>
+		<form:input type="hidden" id="id" path="id"/>
 		<spring:message code="label.firstName"/>: <form:input id="firstName" path="name.firstName"/>
 		<form:errors class="error" path="name.firstName"/><br/>
 		<spring:message code="label.middleName"/>: <form:input id="middleName" path="name.middleName"/>
@@ -77,5 +77,8 @@
 		<button id="create">Submit</button>
 		<button type="reset">Reset</button>
 	</form:form>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="/resources/person/personForm.js"></script>
 </body>
 </html>

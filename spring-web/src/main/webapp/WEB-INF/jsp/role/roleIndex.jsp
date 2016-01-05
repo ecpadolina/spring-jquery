@@ -7,7 +7,7 @@
 	<title>Spring Activity - Role Management</title>
 </head>
 <body>
-	<jsp:include page="headers.jsp"/>
+	<jsp:include page="../headers.jsp"/>
 	<h1>Role Management</h1>
 	<br>
 	<form>
@@ -41,6 +41,6 @@
 		</tbody>
 	</table>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="<c:url value="resources/scripts.js"/>"></script>
+    <script src="<c:url value="resources/roleIndex.js"/>"></script>
 </body>
 </html>
