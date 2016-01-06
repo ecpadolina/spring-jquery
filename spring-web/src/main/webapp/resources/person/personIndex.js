@@ -21,8 +21,8 @@ $(document).ready(function() {
               "<td>" + person.firstName + " " + person.lastName + "</td>" +
               "<td>" + new Date(person.birthday).toISOString().slice(0,10) + "</td>" +
               "<td>" + person.gwa + "</td>" +
-              "<td><button onclick=\"location.href=\'/person/edit/" + person.id + "\'\">Edit</button>" + 
-              ((userRole == "ROLE_ADMIN") ? "<button class=\"delete\" value=\"" + person.id + "\">Delete</button>" : "") + "</td></tr>");
+              "<td><button onclick=\"location.href=\'/person/edit/" + person.id + "\'\">Edit</button> " + 
+              ((userRole == "[ROLE_ADMIN]") ? "<button class=\"delete\" value=\"" + person.id + "\">Delete</button>" : "") + "</td></tr>");
           });
 
         $(".delete").click(function(e){

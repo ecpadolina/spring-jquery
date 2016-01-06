@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.http.MediaType;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
@@ -57,13 +58,6 @@ public class PersonController{
 
 	@RequestMapping(value="/", method=RequestMethod.GET)
 	public String showIndex(ModelMap model){
-		Collection<SimpleGrantedAuthority> authorities = (Collection<SimpleGrantedAuthority>) 
-								SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-		for (SimpleGrantedAuthority role : authorities) {
-			currentRoles.add(role.toString());
-			model.addAttribute("userRole", role.toString());
-		}
-
 		List roleList = roleManagerImpl.listRolesWithPerson();
 		model.addAttribute("roleList", roleList);
 		return "person/index";
@@ -244,4 +238,10 @@ public class PersonController{
         	return false;
         }
     }
+
+    @Secured({"ROLE_ADMIN"})
+    @RequestMapping(value="/person/{id}", method=RequestMethod.GET)
+	public @ResponseBody Person getPersonJSON(@PathVariable int id){
+		return personManagerImpl.getPerson(id);
+	}
 }

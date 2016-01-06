@@ -11,8 +11,7 @@
 	<h1>Project Management</h1>
 	Sort By: <select id="column" name="column">
 		<option value="id">Id</option>
-		<option value="name.lastName">Last Name</option>
-		<option value="gwa">Gwa</option>
+		<option value="name">Project Name</option>
 	</select>
 	<select id="order" name="order">
 		<option value="1">Ascending</option>

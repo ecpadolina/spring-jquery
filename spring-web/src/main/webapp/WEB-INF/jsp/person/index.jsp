@@ -9,9 +9,9 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 </head>
 <body>
+	<div>
 	<jsp:include page="../headers.jsp"/>
 	<h1>Person Management</h1>
-	<input type="hidden" id="userRole" value="${userRole}"/>
 	<form>
 	Sort By: <select id="column" name="column">
 			<option value="id">Id</option>

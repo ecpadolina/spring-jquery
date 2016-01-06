@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
+	Logged in as: <sec:authentication property="principal.username" /> 	
+	<input type="hidden" id="userRole" value=<sec:authentication property="principal.authorities" />></input>
 	<div><a href="/">Person</a> <a href="/person/add">Add Person</a> <a href="/person/upload">Upload File</a> </div>
 	<div> <a href="/role"> Roles </a> <a href="/role/add"> Add Role </a>
 	</div>
