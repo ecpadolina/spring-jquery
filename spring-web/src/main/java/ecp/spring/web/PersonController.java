@@ -69,19 +69,6 @@ public class PersonController{
 		return "person/index";
 	}
 
-	@RequestMapping(value="/", headers="Accept=application/json")
-	@ResponseBody
-	public List personList(@RequestParam("role") Integer role,
-						   @RequestParam("order") Integer order,
-						   @RequestParam("column") String column){
-		return personManagerImpl.listPerson(role,order,column);
-	}
-
-	@RequestMapping(value="/person/{id}", method=RequestMethod.GET)
-	public @ResponseBody Person getPersonJSON(@PathVariable int id){
-		return personManagerImpl.getPerson(id);
-	}
-
 	@RequestMapping(value="/person/add", method=RequestMethod.GET)
 	public String addPersonGet(ModelMap model){
 		Person person = new Person();
@@ -122,30 +109,7 @@ public class PersonController{
 
 		personManagerImpl.addPerson(person);
 		return "redirect:/";
-
 	}
-
-	@RequestMapping(value="/person/add",
-                    method=RequestMethod.PUT,
-                    produces=MediaType.APPLICATION_JSON_VALUE,
-                    consumes=MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public boolean addPersonJSON(@RequestBody Person person,
-                                    ModelMap model) {
-    	try{
-    		Set<Role> tempRoles = person.getRoles();
-    		Set<Role> roles = new HashSet<Role>();
-    		for(Role tempRole : tempRoles){
-    			Role role = roleManagerImpl.getRole(tempRole.getRoleId());
-    			roles.add(role);
-    		}
-    		person.setRoles(roles);
-        	personManagerImpl.addPerson(person);
-        	return true;
-        } catch (Exception e){
-        	return false;
-        }
-    }
 
 	@RequestMapping(value="/person/edit/{id}", method=RequestMethod.GET)
 	public String editPersonGet(ModelMap model, @PathVariable int id){
@@ -188,6 +152,54 @@ public class PersonController{
 		return "redirect:/";
 	}
 
+	@RequestMapping(value="/", method=RequestMethod.POST)
+	public String deletePerson(@RequestParam(value="id") int id){
+		Person person = personManagerImpl.getPerson(id);
+		personManagerImpl.deletePerson(person);
+		return "redirect:/";
+	}
+
+	@RequestMapping(value="/person/upload", method=RequestMethod.GET)
+	public String uploadFileGet(){
+		return "upload";
+	}
+
+	@RequestMapping(value="/person/upload", method=RequestMethod.POST)
+	public String uploadFilePost(ModelMap model, @RequestParam(value="file") MultipartFile file){
+		PersonDTO person = new PersonDTO();
+		if(file != null){
+			person = personFileParser.extractPersonFromFile(file);
+		}
+		personManagerImpl.addPerson(personTransformer.toPerson(person));
+		return "redirect:/";
+	}
+
+	public void addRolesToModel(ModelMap model){
+		model.addAttribute("roles", roleManagerImpl.getRoles(1, "roleId"));
+	}
+
+	//////////////////////////////////////////////////////////////
+	//REST METHODS
+
+	@RequestMapping(value="/", headers="Accept=application/json")
+	@ResponseBody
+	public List listPersonJSON(@RequestParam("role") Integer role,
+						   @RequestParam("order") Integer order,
+						   @RequestParam("column") String column){
+		return personManagerImpl.listPerson(role,order,column);
+	}
+
+	@RequestMapping(value="/person/delete/{id}", method=RequestMethod.DELETE, produces=MediaType.APPLICATION_JSON_VALUE, consumes=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public boolean deletePersonJSON(@PathVariable int id){
+		try{
+			personManagerImpl.deletePerson(personManagerImpl.getPerson(id));
+			return true;
+		} catch (Exception e){
+			return false;
+		}
+	}
+
 	@RequestMapping(value="/person/edit",
                     method=RequestMethod.PUT,
                     produces=MediaType.APPLICATION_JSON_VALUE,
@@ -211,41 +223,25 @@ public class PersonController{
         }
     }
 
-	@RequestMapping(value="/", method=RequestMethod.POST)
-	public String deletePerson(@RequestParam(value="id") int id){
-		Person person = personManagerImpl.getPerson(id);
-		personManagerImpl.deletePerson(person);
-		return "redirect:/";
-	}
-
-	@RequestMapping(value="/person/delete/{id}", method=RequestMethod.DELETE, produces=MediaType.APPLICATION_JSON_VALUE, consumes=MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public boolean deletePersonJSON(@PathVariable int id){
-		try{
-			personManagerImpl.deletePerson(personManagerImpl.getPerson(id));
-			return true;
-		} catch (Exception e){
-			return false;
-		}
-	}
-
-	@RequestMapping(value="/person/upload", method=RequestMethod.GET)
-	public String uploadFileGet(){
-		return "upload";
-	}
-
-	@RequestMapping(value="/person/upload", method=RequestMethod.POST)
-	public String uploadFilePost(ModelMap model, @RequestParam(value="file") MultipartFile file){
-		PersonDTO person = new PersonDTO();
-		if(file != null){
-			person = personFileParser.extractPersonFromFile(file);
-		}
-		personManagerImpl.addPerson(personTransformer.toPerson(person));
-		return "redirect:/";
-	}
-
-	public void addRolesToModel(ModelMap model){
-		model.addAttribute("roles", roleManagerImpl.getRoles(1, "roleId"));
-	}
-
+	@RequestMapping(value="/person/add",
+                    method=RequestMethod.PUT,
+                    produces=MediaType.APPLICATION_JSON_VALUE,
+                    consumes=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public boolean addPersonJSON(@RequestBody Person person,
+                                    ModelMap model) {
+    	try{
+    		Set<Role> tempRoles = person.getRoles();
+    		Set<Role> roles = new HashSet<Role>();
+    		for(Role tempRole : tempRoles){
+    			Role role = roleManagerImpl.getRole(tempRole.getRoleId());
+    			roles.add(role);
+    		}
+    		person.setRoles(roles);
+        	personManagerImpl.addPerson(person);
+        	return true;
+        } catch (Exception e){
+        	return false;
+        }
+    }
 }

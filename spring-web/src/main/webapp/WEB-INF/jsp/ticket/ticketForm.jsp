@@ -11,9 +11,11 @@
 <body>
 	<jsp:include page="../headers.jsp"/>
 	<h1> Ticket Form </h1>
+
 	<input type="hidden" id="projectId" value="${projectId}"/>
+	<input type="hidden" id="action" value="${action}"/>
 	<form:form method="POST" modelAttribute="ticket">
-	<form:input type="hidden" path="id"/>
+	<form:input type="hidden" id="ticketId" path="id"/>
 	Ticket Details: <form:input id="ticketDetails" path="ticketDetails"/><br>
 	Ticket Status: <form:input id="ticketStatus" path="ticketStatus"/><br>
 	Assign to: 
@@ -33,6 +35,8 @@
 	<input type="submit" id="create" value="Submit"/>
 	<input type="reset"/>
 </form:form>
+	<br>
+	<button onclick="location.href='/project/edit/${projectId}'">Go Back</button>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script src="/resources/tickets/ticketForm.js"></script>
 </body>

@@ -4,8 +4,6 @@ $(document).ready(function() {
 		var action = $("#action").val();
 		var method = $("#method").val();
 		var command = (action == "add") ? "Add" : "Update";
-
-		console.log(action);
 		if(confirm(command + " project?")){
 			var projectId = $("#projectId").val();
 			var projectName = $("#projectName").val();

@@ -17,7 +17,7 @@
 	<h1>User Form</h1>
 	<form:form method="POST" accept-charset="UTF-8" modelAttribute="user">
 		Username: <form:input path="username"/><br>
-		Password: <form:input path="password"/><br>
+		Password: <form:input type="password" path="password"/><br>
 		Enabled: <form:radiobutton path="enabled" value="true" label="True" id="rdbEn"/>
 		<form:radiobutton path="enabled" value="false" label="False" id="rdbEn"/><br>
 		Role: <form:radiobutton path="role" value="ROLE_USER" label="User" id="rdbRole"/>

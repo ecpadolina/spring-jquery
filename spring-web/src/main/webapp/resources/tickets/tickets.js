@@ -10,7 +10,6 @@ $(document).ready(function() {
 				url: "/project/edit/" + projectId + "/tickets",
 				dataType: "json"
 			});
-
 			ajaxCall.done(function(tickets){
 				$("#tickets").children().remove();
 					$.each(tickets, function(i,ticket){
@@ -18,7 +17,12 @@ $(document).ready(function() {
 							"<td>" + ticket.ticketDetails + "</td>" + 
 							"<td>" + ticket.ticketStatus + "</td>" +
 							"<td>" + ticket.person.name.lastName + ", " + ticket.person.name.firstName + "</td>" +
-							"<td><button type='button' value='" + ticket.id + "' class='delete'>Delete</button></td><tr>");
+							"<td>" + "<button type='button' onclick='location.href=\"/project/edit/" + projectId + "/editTicket/" + ticket.id + "\"'>Edit</button> " +
+							"<button type='button' value='" + ticket.id + "' class='delete'>Delete</button></td><tr>");
+				});
+
+				$(".edit").click(function(e){
+					//e.preventDefault();
 				});
 
 				$(".delete").click(function(e){

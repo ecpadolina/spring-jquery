@@ -36,7 +36,7 @@
 		</c:if>
 		<br><br>
 		<c:if test="${not empty id}">
-			<a href="/project/edit/${id}/addTicket">Add Ticket</a>
+			<button type="button" onclick="location.href='/project/edit/${id}/addTicket'">Add Ticket</button>
 		</c:if>
 		<c:if test="${not empty project.tickets}">
 		<table>
@@ -55,10 +55,11 @@
 		<br>
 		</div>
 		<div>
-		<input type="submit" id="create" value="Submit"/>
-		<input type="reset"/>
+			<input type="submit" id="create" value="Submit"/>
+			<input type="reset"/>
 		</div>
 	</form:form>
+
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script src="/resources/tickets/tickets.js"></script>
 	<script src="/resources/project/projectForm.js"></script>
