@@ -2,6 +2,26 @@ app.controller("PersonSaveController", [
 	"$scope", "$http", "$window", 
 	function($scope, $http, $window){
 
+		$scope.person = {
+			"id": 0
+		}
+
+		if(action == "edit"){
+			$http.get("/person/"+id)
+				 .then(function(result){
+				 	$scope.person = result.data;
+				 	$scope.contacts = result.data.contacts;
+				 	$scope.selectedRoles = result.data.roles;
+				 	angular.forEach($scope.selectedRoles, function(value, key){
+				 		$scope.selectedRoleIds.push(value.roleId);
+				 	});
+				 	$scope.person.birthday = new Date(result.data.birthday);
+				 },
+				 	function(error){
+				 		alert("Person not found!");
+				 	});
+		}
+		
 		$scope.roles = [];
 		$scope.listRoles = function(){
 			$http.get("/role", {params: {
@@ -17,12 +37,14 @@ app.controller("PersonSaveController", [
 		$scope.listRoles();
 
 		$scope.selectedRoles = [];
+		$scope.selectedRoleIds = [];
 		$scope.toggleSelection = function(item){
-			var idx = $scope.selectedRoles.indexOf(item);
+			var idx = $scope.selectedRoleIds.indexOf(item);
+
 			if(idx > -1){
-				$scope.selectedRoles.splice(idx, 1);
+				$scope.selectedRoleIds.splice(idx, 1);
 			} else {
-				$scope.selectedRoles.push(item);
+				$scope.selectedRoleIds.push(item);
 			}
 		};
 
@@ -53,13 +75,15 @@ app.controller("PersonSaveController", [
           $scope.contacts.splice(index, 1);
         };
 
-        $scope.test = function(){
-        	console.log($scope.contacts);
-        } 
+        $scope.isNew = function(){
+        	return ($scope.person.id === 0);
+        }
 
 		$scope.save = function () {
-			if($window.confirm("Add Person?")){
-				$http.put("/person/add", {
+			var command = (action == "add") ? "Add" : "Update";
+			if($window.confirm(command + " person?")){
+				$http.put("/person/"+action, {
+					"id": $scope.person.id,
 					"name": {
 						"firstName": $scope.person.name.firstName,
 						"middleName": $scope.person.name.middleName,
@@ -77,18 +101,22 @@ app.controller("PersonSaveController", [
 					},
 					"gwa": $scope.person.gwa,
 					"employmentStatus": $scope.person.employmentStatus,
-					"roles": $scope.selectedRoles,
 					"contacts":  $scope.contacts
-				})
+				}, {params: {"roles" : $scope.selectedRoleIds}})
 				.then(function(result){
 					if(result.data === true){
-						alert("Person successfully added!");
-						$('[type="reset"]').trigger("click");
-						$scope.contacts = [];
+						if(action == "add"){
+							alert("Person successfully added!");
+							$('[type="reset"]').trigger("click");
+							$scope.contacts = [];
+							$scope.selectedRoles = [];
+							$scope.selectedRoleIds = [];
+						} else {
+							alert("Person successfully updated!");
+						};
 					} else {
 						alert("Error!");
 					}
-					console.log(result);
 				},
 					function(error){
 						alert("ERROR!");

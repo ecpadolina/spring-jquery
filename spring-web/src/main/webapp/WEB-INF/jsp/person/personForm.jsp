@@ -14,13 +14,19 @@
 <body>
 	<jsp:include page="../headers.jsp"/>
 	<h1>Person Form</h1>
-		<input type="hidden" id="action" value="${action}"/>
-		<input type="hidden" id="method" value="${method}"/>
-
+		<script type="text/javascript">
+			var action = "${action}";
+			var method = "${method}";
+			var id = "${id}";
+		</script>
 	<div ng-app="person" ng-controller="PersonSaveController">
 	<form ng-submit="save()">
 		<input type="hidden" id="id" path="id"/>
 		<table>
+			<tr ng-hide="isNew()">
+				<td>ID: </td>
+				<td><input ng-model="person.id" type="hidden"> {{person.id}} </td>
+			</tr>
 			<tr>
 				<td>First Name:</td>
 				<td><input ng-model="person.name.firstName" required="required"/></td>
@@ -87,7 +93,7 @@
 				<td>Roles:</td>
 				<td>
 					<label ng-repeat="role in roles">
-					<input type="checkbox" value="{{role}}" ng-checked="selectedItems.indexOf(role) > -1" ng-click="toggleSelection(role)">{{role.roleType}}</input>
+					<input type="checkbox" value="{{role}}" ng-checked="selectedRoleIds.indexOf(role.roleId) > -1" ng-click="toggleSelection(role.roleId)">{{role.roleType}}</input>
 					</label>
 				</td>
 			<tr>

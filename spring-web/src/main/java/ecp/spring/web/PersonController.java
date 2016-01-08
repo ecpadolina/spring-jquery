@@ -109,6 +109,7 @@ public class PersonController{
 	public String editPersonGet(ModelMap model, @PathVariable int id){
 		PersonDTO person = personTransformer.toDTO(personManagerImpl.getPerson(id));
 		model.addAttribute("person", person);
+		model.addAttribute("id", person.getId());
 		model.addAttribute("contacts", person.getContacts());
 		model.addAttribute("action", "edit");
 		model.addAttribute("method", "PUT");
@@ -200,12 +201,11 @@ public class PersonController{
                     consumes=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public boolean editPersonJSON(@RequestBody Person person,
-                                    ModelMap model) {
+                                    ModelMap model, @RequestParam("roles") Integer[] roleIds) {
     	try{
-    		Set<Role> tempRoles = person.getRoles();
     		Set<Role> roles = new HashSet<Role>();
-    		for(Role tempRole : tempRoles){
-    			Role role = roleManagerImpl.getRole(tempRole.getRoleId());
+    		for(Integer roleId : roleIds){
+    			Role role = roleManagerImpl.getRole(roleId);
     			roles.add(role);
     		}
     		person.setRoles(roles);
@@ -223,15 +223,14 @@ public class PersonController{
                     consumes=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public boolean addPersonJSON(@RequestBody Person person,
-                                    ModelMap model) {
+                                    ModelMap model, @RequestParam("roles") Integer[] roleIds) {
     	try{
-    		/*Set<Role> tempRoles = person.getRoles();
     		Set<Role> roles = new HashSet<Role>();
-    		for(Role tempRole : tempRoles){
-    			Role role = roleManagerImpl.getRole(tempRole.getRoleId());
+    		for(Integer roleId : roleIds){
+    			Role role = roleManagerImpl.getRole(roleId);
     			roles.add(role);
     		}
-    		person.setRoles(roles);*/
+    		person.setRoles(roles);
         	personManagerImpl.addPerson(person);
         	return true;
         } catch (Exception e){

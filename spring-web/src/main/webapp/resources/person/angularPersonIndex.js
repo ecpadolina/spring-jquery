@@ -1,10 +1,9 @@
 app.controller("PersonController", [
-	"$scope", "$http", "$window", 
+	"$scope", "$http", "$window",
 	function($scope, $http, $window){
 		$scope.column = "id";
 		$scope.order = 1;
 		$scope.role = 0;
-
 		$scope.listPerson = function(){
 			$scope.persons = [];
 
@@ -16,10 +15,11 @@ app.controller("PersonController", [
 				.then(function(result){
 					$scope.persons = result.data;
 				}, function(error){
-					$window.alert(error);
+					$window.alert("Error!");
 				});
 		};
 		$scope.listPerson();
+		$scope.order = $scope.order[0];
 
 		$scope.isAdmin = function(){
 			return userRole === "[ROLE_ADMIN]";
@@ -43,20 +43,4 @@ app.controller("PersonController", [
 				return;
 			}
 		}
-
-		$scope.items = ['a','b','c'];
-		$scope.selectedItems = [];
-
-		$scope.toggleSelection = function(item){
-			var idx = $scope.selectedItems.indexOf(item);
-			if(idx > -1){
-				$scope.selectedItems.splice(idx, 1);
-			} else {
-				$scope.selectedItems.push(item);
-			}
-		};
-
-		$scope.test = function(){
-			console.log($scope.selectedItems);
-		};
 }]);
