@@ -183,7 +183,7 @@ public class PersonController{
 		return personManagerImpl.listPerson(role,order,column);
 	}
 
-	@RequestMapping(value="/person/delete/{id}", method=RequestMethod.DELETE, produces=MediaType.APPLICATION_JSON_VALUE, consumes=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/person/delete/{id}", method=RequestMethod.DELETE, produces=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public boolean deletePersonJSON(@PathVariable int id){
 		try{
@@ -225,16 +225,17 @@ public class PersonController{
     public boolean addPersonJSON(@RequestBody Person person,
                                     ModelMap model) {
     	try{
-    		Set<Role> tempRoles = person.getRoles();
+    		/*Set<Role> tempRoles = person.getRoles();
     		Set<Role> roles = new HashSet<Role>();
     		for(Role tempRole : tempRoles){
     			Role role = roleManagerImpl.getRole(tempRole.getRoleId());
     			roles.add(role);
     		}
-    		person.setRoles(roles);
+    		person.setRoles(roles);*/
         	personManagerImpl.addPerson(person);
         	return true;
         } catch (Exception e){
+        	e.printStackTrace();
         	return false;
         }
     }
