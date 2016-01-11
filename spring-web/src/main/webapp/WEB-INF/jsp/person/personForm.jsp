@@ -85,7 +85,7 @@
 			<tr>
 				<td>Add Contact:</td><td><button type="button" ng-click="landline()">Landline</button> <button type="button" ng-click="mobile()">Mobile</button> <button type="button" ng-click="email()">Email</button></td>
 			</tr>
-			<tr ng-repeat="contact in contacts">
+			<tr ng-repeat="contact in person.contacts">
 				<td> <input type="hidden" ng-model="contact.contactType"/> {{contact.contactType}}:</td>
 				<td> <input ng-model="contact.contactInfo"> <button type="button" ng-click="remove()">Remove</button></td>
 			</tr>
@@ -105,5 +105,6 @@
 
 	<script src="/resources/person/angularPerson.js"></script>	
 	<script src="/resources/person/angularPersonForm.js"></script>
+	<script src="/resources/person/angularPersonFactory.js"></script>
 </body>
 </html>

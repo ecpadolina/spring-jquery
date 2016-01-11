@@ -58,6 +58,7 @@
 	<script>var userRole = $("#userRole").val();</script>
 	<script src="/resources/person/angularPerson.js"></script>
 	<script src="/resources/person/angularPersonIndex.js"></script>
+	<script src="/resources/person/angularPersonFactory.js"></script>
 
 </body>
 </html>

@@ -1,25 +1,24 @@
 app.controller("PersonSaveController", [
-	"$scope", "$http", "$window", 
-	function($scope, $http, $window){
+	"$scope", "$http", "$window", 'personService',
+	function($scope, $http, $window, personService){
 
 		$scope.person = {
 			"id": 0
 		}
 
 		if(action == "edit"){
-			$http.get("/person/"+id)
-				 .then(function(result){
-				 	$scope.person = result.data;
-				 	$scope.contacts = result.data.contacts;
-				 	$scope.selectedRoles = result.data.roles;
-				 	angular.forEach($scope.selectedRoles, function(value, key){
-				 		$scope.selectedRoleIds.push(value.roleId);
-				 	});
-				 	$scope.person.birthday = new Date(result.data.birthday);
-				 },
-				 	function(error){
-				 		alert("Person not found!");
-				 	});
+			personService.getPersonJSON(id).then(function(result){
+			 	$scope.person = result;
+			 	$scope.person.contacts = result.contacts;
+			 	$scope.selectedRoles = result.roles;
+			 	angular.forEach($scope.selectedRoles, function(value, key){
+			 		$scope.selectedRoleIds.push(value.roleId);
+			 	});
+			 	$scope.person.birthday = new Date(result.birthday);
+			 },
+			 	function(error){
+			 		alert("Person not found!");
+			 	});
 		}
 		
 		$scope.roles = [];
@@ -48,31 +47,31 @@ app.controller("PersonSaveController", [
 			}
 		};
 
-		$scope.contacts = [];
+		$scope.person.contacts = [];
 
 		$scope.landline = function(event) {
-			$scope.contacts.push({
+			$scope.person.contacts.push({
 				contactType: "Landline",
 				contactInfo: ""
 			});
 		};
 
 		$scope.email = function(){
-			$scope.contacts.push({
+			$scope.person.contacts.push({
 				contactType: "Email",
 				contactInfo: ""
 			});
 		}
 
 		$scope.mobile = function(){
-			$scope.contacts.push({
+			$scope.person.contacts.push({
 				contactType: "Mobile",
 				contactInfo: ""
 			});
 		};
 
 		$scope.remove = function(index){
-          $scope.contacts.splice(index, 1);
+          $scope.person.contacts.splice(index, 1);
         };
 
         $scope.isNew = function(){
@@ -82,33 +81,13 @@ app.controller("PersonSaveController", [
 		$scope.save = function () {
 			var command = (action == "add") ? "Add" : "Update";
 			if($window.confirm(command + " person?")){
-				$http.put("/person/"+action, {
-					"id": $scope.person.id,
-					"name": {
-						"firstName": $scope.person.name.firstName,
-						"middleName": $scope.person.name.middleName,
-						"lastName": $scope.person.name.lastName
-					},
-					"birthday": $scope.person.birthday,
-					"address": {
-						"houseNo": $scope.person.address.houseNo,
-						"street": $scope.person.address.street,
-						"barangay": $scope.person.address.barangay,
-						"subdivision": $scope.person.address.subdivision,
-						"municipality": $scope.person.address.municipality,
-						"province": $scope.person.address.province,
-						"zipcode": $scope.person.address.zipcode
-					},
-					"gwa": $scope.person.gwa,
-					"employmentStatus": $scope.person.employmentStatus,
-					"contacts":  $scope.contacts
-				}, {params: {"roles" : $scope.selectedRoleIds}})
+				personService.savePersonJSON($scope.person,action,$scope.selectedRoleIds)
 				.then(function(result){
 					if(result.data === true){
 						if(action == "add"){
 							alert("Person successfully added!");
 							$('[type="reset"]').trigger("click");
-							$scope.contacts = [];
+							$scope.person.contacts = [];
 							$scope.selectedRoles = [];
 							$scope.selectedRoleIds = [];
 						} else {
