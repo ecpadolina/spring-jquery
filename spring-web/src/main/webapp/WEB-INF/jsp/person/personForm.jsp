@@ -9,15 +9,13 @@
 <head>
 <title>Person Management - Person Form</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<script src="/resources/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.0/angular.min.js"></script>
 </head>
 <body>
-	<jsp:include page="../headers.jsp"/>
 	<h1>Person Form</h1>
 		<script type="text/javascript">
 			var action = "${action}";
 			var method = "${method}";
-			var id = "${id}";
 		</script>
 	<div ng-app="person" ng-controller="PersonSaveController">
 	<form ng-submit="save()">
@@ -101,10 +99,6 @@
 			</tr>
 		</table>
 	</form>
-	</div>
-
-	<script src="/resources/person/angularPerson.js"></script>	
-	<script src="/resources/person/angularPersonForm.js"></script>
-	<script src="/resources/person/angularPersonFactory.js"></script>
+	</div>	
 </body>
 </html>

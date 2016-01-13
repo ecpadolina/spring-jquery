@@ -58,100 +58,22 @@ public class PersonController{
 
 	@RequestMapping(value="/", method=RequestMethod.GET)
 	public String showIndex(ModelMap model){
-		List roleList = roleManagerImpl.listRolesWithPerson();
-		model.addAttribute("roleList", roleList);
 		return "person/index";
 	}
 
 	@RequestMapping(value="/person/add", method=RequestMethod.GET)
 	public String addPersonGet(ModelMap model){
-		Person person = new Person();
-		model.addAttribute("person", person);
 		model.addAttribute("action", "add");
 		model.addAttribute("method", "PUT");
-		addRolesToModel(model);
 		return "person/personForm";
 	}
 
-	@RequestMapping(value="/person/add", method=RequestMethod.POST)
-	public String addPersonPost(ModelMap model, @ModelAttribute(value="person") Person person, BindingResult result,
-								 @RequestParam(value="contactInfo", required=false) String[] contactInfo,
-								 @RequestParam(value="contactType", required=false) String[] contactType,
-								 @RequestParam(value="personRoles", required=false) String[] personRoles){
 
-		Set<ContactInfo> contacts = new HashSet<ContactInfo>();
-		Set<Role> roles = new HashSet<Role>();
-		if(contactInfo != null) {
-			for (int i = 0; i < contactInfo.length; i++) {
-				contacts.add(new ContactInfo(contactType[i], contactInfo[i]));
-			}
-			person.setContacts(contacts);
-		}
-		if(personRoles != null){
-			for(int i = 0; i < personRoles.length; i++){
-				roles.add(roleManagerImpl.getRole(Integer.parseInt(personRoles[i])));
-			}
-			person.setRoles(roles);
-		}
-
-		personValidator.validate(person,result);
-		if(result.hasErrors()){
-			model.addAttribute("contacts", contacts);
-			addRolesToModel(model);
-			return "person/personForm";
-		}
-
-		personManagerImpl.addPerson(person);
-		return "redirect:/";
-	}
-
-	@RequestMapping(value="/person/edit/{id}", method=RequestMethod.GET)
-	public String editPersonGet(ModelMap model, @PathVariable int id){
-		PersonDTO person = personTransformer.toDTO(personManagerImpl.getPerson(id));
-		model.addAttribute("person", person);
-		model.addAttribute("id", person.getId());
-		model.addAttribute("contacts", person.getContacts());
+	@RequestMapping(value="/person/edit/", method=RequestMethod.GET)
+	public String editPersonGet(ModelMap model){
 		model.addAttribute("action", "edit");
 		model.addAttribute("method", "PUT");
-		addRolesToModel(model);
 		return "person/personForm";
-	}
-
-	@RequestMapping(value="/person/edit/{id}", method=RequestMethod.POST)
-	public String editPersonPost(ModelMap model, @ModelAttribute(value="person") Person person, BindingResult result,
-								 @RequestParam(value="contactInfo", required=false) String[] contactInfo,
-								 @RequestParam(value="contactType", required=false) String[] contactType,
-								 @RequestParam(value="personRoles", required=false) String[] personRoles){
-		Set<ContactInfo> contacts = new HashSet<ContactInfo>();
-		Set<Role> roles = new HashSet<Role>();
-		if(contactInfo != null) {
-			for (int i = 0; i < contactInfo.length; i++) {
-				contacts.add(new ContactInfo(contactType[i], contactInfo[i]));
-			}
-			person.setContacts(contacts);
-		}
-		if(personRoles != null){
-			for(int i = 0; i < personRoles.length; i++){
-				roles.add(roleManagerImpl.getRole(Integer.parseInt(personRoles[i])));
-			}
-			person.setRoles(roles);
-		}
-
-		personValidator.validate(person,result);
-		if(result.hasErrors()){
-			model.addAttribute("contacts", contacts);
-			addRolesToModel(model);
-			return "person/personForm";
-		}
-		personManagerImpl.updatePerson(person);
-		return "redirect:/";
-	}
-
-	@RequestMapping(value="/", method=RequestMethod.POST)
-	public String deletePerson(@RequestParam(value="id") int id){
-		Person person = personManagerImpl.getPerson(id);
-		personManagerImpl.deletePerson(person);
-		return "redirect:/";
 	}
 
 	@RequestMapping(value="/person/upload", method=RequestMethod.GET)
@@ -169,14 +91,10 @@ public class PersonController{
 		return "redirect:/";
 	}
 
-	public void addRolesToModel(ModelMap model){
-		model.addAttribute("roles", roleManagerImpl.getRoles(1, "roleId"));
-	}
-
 	//////////////////////////////////////////////////////////////
 	//REST METHODS
 
-	@RequestMapping(value="/", headers="Accept=application/json")
+	@RequestMapping(value="/person/list", headers="Accept=application/json")
 	@ResponseBody
 	public List listPersonJSON(@RequestParam("role") Integer role,
 						   @RequestParam("order") Integer order,
@@ -243,5 +161,10 @@ public class PersonController{
     @RequestMapping(value="/person/{id}", method=RequestMethod.GET)
 	public @ResponseBody Person getPersonJSON(@PathVariable int id){
 		return personManagerImpl.getPerson(id);
+	}
+
+	@RequestMapping(value="/person/associatedRoles", method=RequestMethod.GET, headers="Accept=application/json")
+	public @ResponseBody List listAssociatedRoles(){
+		return roleManagerImpl.listRolesWithPerson();
 	}
 }

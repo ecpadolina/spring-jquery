@@ -1,7 +1,7 @@
 app.factory('personService', function($http){
 	return{
 		listPersonJSON: function(order,column,role){
-			return $http.get("/", {params: {"order":order, "column":column, "role":role}})
+			return $http.get("/person/list", {params: {"order":order, "column":column, "role":role}})
 						.then(function(result){
 							return result.data;
 						});
@@ -43,6 +43,12 @@ app.factory('personService', function($http){
 				.then(function(result){
 					return result.data;
 				});
+		},
+		listAssociatedRoles: function(){
+			return $http.get("/person/associatedRoles")
+					.then(function(result){
+						return result.data;
+					});
 		}
 	};
 });

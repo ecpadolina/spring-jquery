@@ -9,6 +9,7 @@
 	<title>Spring Activity - Person Management</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script src="/resources/angular.min.js"></script>
+	<script src="/resources/angular-route.min.js"></script>
 </head>
 <body>
 	<div ng-app="person" ng-controller="PersonController">
@@ -20,14 +21,11 @@
 				<option value="name.lastName">Last Name</option>
 				<option value="gwa">Gwa</option>
 			</select>
-			<select id="order" ng-model="order" name="order">
-				<option value="1">Ascending</option>
-				<option value="2">Descending</option>
+			<select ng-model="order" ng-options="obj.id as obj.name for obj in orderOptions">
+				<option value="">Select Order</option>
 			</select>
-			<select id="role" ng-model="role" name="role">
-				<c:forEach var="r" items="${roleList}">
-					<option value="${r.roleId}">${r.roleType}</option>
-				</c:forEach>
+			<select id="role" ng-model="role" ng-options="obj.roleId as obj.roleType for obj in roleOptions" name="role">
+				<option value="">Select Role</option>
 			</select>
 			<button id="search" ng-click="listPerson()" type="button">Search</button>
 		</form>
@@ -48,17 +46,20 @@
 					<td>{{person.lastName}}, {{person.firstName}}</td>
 					<td>{{person.birthday}}</td>
 					<td>{{person.gwa}}</td>
-					<td><a href="/person/edit/{{person.id}}"><button>Edit</button></a>
+					<td><a href="#/person/edit/{{person.id}}"><button>Edit</button></a>
 					<button ng-show="isAdmin()" ng-click="deletePerson(person.id)">Delete</button>
 					</td>
 				</tr>
 			</tbody>
 		</table>
+		<div ng-view></div>
 	</div>
 	<script>var userRole = $("#userRole").val();</script>
 	<script src="/resources/person/angularPerson.js"></script>
-	<script src="/resources/person/angularPersonIndex.js"></script>
+	<script src="/resources/person/angularPersonRoute.js"></script>
 	<script src="/resources/person/angularPersonFactory.js"></script>
+	<script src="/resources/person/angularPersonForm.js"></script>
+	<script src="/resources/person/angularPersonIndex.js"></script>
 
 </body>
 </html>

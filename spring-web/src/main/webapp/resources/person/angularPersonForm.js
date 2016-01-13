@@ -1,13 +1,13 @@
 app.controller("PersonSaveController", [
-	"$scope", "$http", "$window", 'personService',
-	function($scope, $http, $window, personService){
+	"$scope", "$http", "$window", 'personService', '$routeParams',
+	function($scope, $http, $window, personService, $routeParams){
 
 		$scope.person = {
 			"id": 0
 		}
 
 		if(action == "edit"){
-			personService.getPersonJSON(id).then(function(result){
+			personService.getPersonJSON($routeParams.personIdEdit).then(function(result){
 			 	$scope.person = result;
 			 	$scope.person.contacts = result.contacts;
 			 	$scope.selectedRoles = result.roles;
